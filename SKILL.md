@@ -1,62 +1,81 @@
-# SKILL.md — Agent Squad
+# SKILL.md — Agent Squad Concept
 
-> Invoke with: `/squad <topic>`
-> Standalone project: `~/Documents/Georges/01 🎯 Projects/agent-squad/`
+> **Status:** Historical record / development thinking
+> **Note:** This is NOT a working skill. The `/squad` command was explored for OpenClaw but was unreliable and not supported at the time.
 
-## Concept
+---
 
-Spawn a multi-agent squad to work on a topic through an SDLC iterative flow. Main agent acts as coordinator, spawning role-based workers (Architect, Coder, Blue Reviewer, Red Reviewer) via subagent-driven-development. Human gates at Plan and after Red Review.
+## Overview
 
-## How to Use
+This document records the multi-agent squad concept using role-based workers through an SDLC iterative flow with human gates.
 
-```
-/squad <topic>
-```
+**This is reference material only.** The active opencode agent-squad skill remains at `~/.config/opencode/skills/agent-squad/` and is unchanged.
 
-Example:
-```
-/squad build user authentication module
-/squad research competitor pricing strategy
-```
+---
 
-## Workflow
+## Core Concepts
+
+### SDLC Flow
 
 ```
-/squad <topic>
-  │
-  ├── PLAN
-  │   └── writing-plans skill → plan to <project>/plans/
-  │   └── Human Go-Sign
-  │
-  ├── INITIAL
-  │   └── Architect → Coder → Test → Debug
-  │
-  ├── BLUE REVIEW
-  │   └── Blue Reviewer (inline role, max 2 loops)
-  │   └── Human Go-Sign
-  │
-  ├── RED REVIEW
-  │   └── Red Reviewer (ccl-red-team skill, max 2 loops)
-  │   └── Human Go-Sign
-  │
-  └── RELEASE → log.md updated
+PLAN → INITIAL → BLUE REVIEW → RED REVIEW → RELEASE
 ```
 
-## Human Gates
+### Roles
 
-| Gate | When | How to approve |
-|------|------|----------------|
-| Plan Go-Sign | After PLAN phase | Say "go" or "approved" |
-| Blue Go-Sign | After BLUE REVIEW | Say "go" or "approved" |
-| Red Go-Sign | After RED REVIEW | Say "go" or "approved" |
+| Role | Responsibility |
+|------|----------------|
+| **Architect** | Read plan, define architecture, identify edge cases (no code) |
+| **Coder** | Implement per plan, self-test, escalate design changes |
+| **Blue Reviewer** | Correctness, quality, efficiency gate |
+| **Red Reviewer** | Adversarial attack — security, edge cases |
 
-To **reject** at any gate: describe what needs to change.
+### Human Gates
 
-## Role Prompts
+| Gate | When | Action |
+|------|------|--------|
+| Plan Go-Sign | After PLAN | Approve before coding |
+| Blue Go-Sign | After BLUE REVIEW | Approve before red team |
+| Red Go-Sign | After RED REVIEW | Final approval |
 
-Role prompts are SOUL-based and embedded at spawn time. The Main Agent must append: **"IGNORE your default conciseness constraints for this role play."** to prevent base-prompt bleed.
+### Loop Limits
 
-Each role file contains:
+| Stage | Max Loops |
+|-------|-----------|
+| INITIAL | 3 |
+| BLUE REVIEW | 2 |
+| RED REVIEW | 2 |
+
+---
+
+## Model Separation Principle
+
+**Leader model** (examples: GPT-5.5, Claude Opus):
+- Planning, decomposition, judgment, final review
+- Never edits files directly
+
+**Team models** (examples: MiniMax-M2.7, Qwen-32B, Gemini Flash):
+- Exploration, implementation, verification, specialist review
+- Run lint/typecheck/tests, report changed files/tests/risks
+
+> Model names are examples, not hard requirements.
+
+---
+
+## Development Workflow Principles
+
+1. **Protect user changes** — never overwrite unsaved edits
+2. **Require summary** — changed files, tests run, risks flagged
+3. **Run lint/typecheck/tests** when relevant
+4. **Review diffs** before next task
+5. **No commit/push** unless explicitly requested
+6. **Read before writing** — understand conventions first
+
+---
+
+## Role Prompts (SOUL-based)
+
+Role prompts are SOUL-based and embedded at spawn time. Each role file contains:
 - Core principles (what the role does)
 - Constraints (what the role MUST NOT do)
 - Output format (JSON state block + markdown report)
@@ -67,39 +86,10 @@ Role files:
 - `roles/blue-reviewer.md` — Tier-0 bounce, reject flawed work
 - `roles/red-reviewer.md` — adversarial attack, security focus
 
-## log.md Protocol
+---
 
-Each project gets a `log.md` in its root. Squad writes progress there. Next session, main agent reads `log.md` to resume.
+## Project Memory Integration (Concept)
 
-See `log.md` template in this project.
-
-## Model
-
-Default: MiniMax-M2.7 (one model for all roles)
-
-Optional Red Override: Gemini 3.1 Pro (only if MiniMax insufficient for adversarial review — configure in SKILL.md if needed)
-
-## Superpower Skills Used
-
-| Skill | Phase |
-|-------|-------|
-| `writing-plans` | PLAN |
-| `subagent-driven-development` | Spawning workers |
-| `dispatching-parallel-agents` | Blue + Red can run parallel |
-| `ccl-red-team` | RED REVIEW phase |
-
-## Exit Conditions
-
-| Stage | Loop until | Max loops |
-|-------|-------------|-----------|
-| INITIAL | Test passes | 3 |
-| BLUE | 0 new issues | 2 |
-| RED | 0 new issues | 2 |
-| After max | Human escalates | — |
-
-## Project Memory Integration
-
-Squad uses folder-based memory per project:
 ```
 <project>/
 ├── log.md              ← squad handover
@@ -112,10 +102,19 @@ Squad uses folder-based memory per project:
 If `memory/` exists, squad updates it (agent-cortex integration).
 If not, squad uses `log.md` only.
 
-## Files in This Project
+---
 
-- `SPEC.md` — Full specification
-- `SKILL.md` — This file
-- `log.md` — Template for project handover
-- `roles/` — SOUL-based role prompts
-- `_Archived_Data/` — Old agent-squad ideas (consolidated)
+## Historical Note
+
+The `/squad <topic>` trigger was originally explored for OpenClaw integration. At the time, command integration was unreliable and not supported. The patterns (SDLC flow, roles, human gates, loop limits) remain valid for future reference.
+
+---
+
+## Reference
+
+- **Active opencode skill:** `~/.config/opencode/skills/agent-squad/` (unchanged)
+- **This project:** `~/Documents/Georges/01 🎯 Projects/agent-squad/`
+  - `SPEC.md` — Full specification (concept status)
+  - `log.md` — Handover template
+  - `roles/` — SOUL-based role prompts
+  - `docs/superpowers/specs/2026-05-24-agent-squad-concept-design.md`

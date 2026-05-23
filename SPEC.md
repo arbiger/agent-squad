@@ -2,17 +2,21 @@
 
 > **Author:** George
 > **Date:** 2026-05-02
-> **Status:** Draft
+> **Status:** CONCEPT RECORD (not a working implementation)
+>
+> **Historical note:** The `/squad` command was explored for OpenClaw integration but was unreliable and not supported at the time. This document preserves the concepts for future reference.
 
 ---
 
 ## 1. Concept & Vision
 
-A standalone orchestration layer for multi-agent squads that uses folder-based project memory (agent-cortex) and superpower skills. Main agent dispatches role-based workers (architect, coder, blue-reviewer, red-reviewer) through a flexible SDLC iterative flow with human gates.
+A concept/design record for multi-agent squad orchestration using role-based workers (architect, coder, blue-reviewer, red-reviewer) through a flexible SDLC iterative flow with human gates.
 
-**The goal:** Any AI agent (OpenCode, OpenClaw, etc.) can invoke `/squad <topic>` to spawn a squad that plans, implements, reviews (blue+red), and hands off via `log.md`. The squad uses existing superpower skills rather than reinventing workflow logic.
+**This is NOT a working command.** It documents the thinking explored during OpenClaw integration attempts.
 
-**Architecture:** Standalone project (`agent-squad/`) that can be installed as a skill later. Uses one model (MiniMax) for all roles. Folder-based memory per project.
+**The goal:** Document the patterns — including SDLC flow (PLAN → INITIAL → BLUE → RED → RELEASE), role definitions, human gates, and loop limits — for future reference or implementation.
+
+**Architecture:** Standalone project (`agent-squad/`) for reference. Folder-based memory per project.
 
 ---
 
@@ -221,9 +225,11 @@ Every worker MUST end their execution with a strict JSON block for the Main Agen
 
 ---
 
-## 7. Trigger Mechanism
+## 7. Trigger Mechanism (Historical)
 
-**Invoke via skill:**
+**This section describes the original `/squad` trigger concept — it is not currently functional.**
+
+The `/squad` command was explored for OpenClaw integration:
 ```
 /squad <topic>
 ```
@@ -233,39 +239,30 @@ Every worker MUST end their execution with a strict JSON block for the Main Agen
 /squad build user authentication module for project X
 ```
 
-**Skill behavior:**
+**Why it didn't work:** Command integration was unreliable and not supported at the time.
+
+**What was intended:**
 1. Parse topic and identify target project folder
 2. Read project context (CLAUDE.md, existing log.md if any)
 3. Spawn Architect subagent for PLAN phase
 4. Continue through SDLC flow
 5. Human gates require explicit approval
 
+The concepts (SDLC flow, roles, human gates, loop limits) remain valid for future implementation attempts.
+
 ---
 
-## 8. Rollout
+## 8. Rollout (Concept Phase — On Hold)
 
-### Phase 1 — Core
-- [x] Write SPEC.md
-- [ ] Create SKILL.md with /squad trigger
-- [ ] Create role prompt files (architect.md, coder.md, blue-reviewer.md, red-reviewer.md)
-- [ ] Create log.md template
-- [ ] Test with OpenCode on a small project
+**Status:** This project is now a concept/design record. The `/squad` command was not implemented due to OpenClaw integration limitations at the time.
 
-### Phase 2 — Integration
-- [ ] Connect to project memory/ folder (agent-cortex per-project)
-- [ ] Integrate superpower skills
-- [ ] Human gate UI (how to approve in CLI)
-
-### Phase 3 — Extend
-- [ ] Make installable as skill
-- [ ] Add model configuration for Red Review override
-- [ ] Add Observer logging (extract rules to docs/decisions/)
+The concepts documented here remain valid for future reference.
 
 ---
 
 ## 9. Reference
 
 - Agent Soul Framework: `drafts/agent-soul-framework/`
-- Squad Framework (OpenClaw): `notes/squad-framework-readme.md`
+- Squad Framework (OpenClaw, archived): historical reference only
 - Long-running Agent concept: `2026-03-22-Long-running Agent 的真正意思：交接零成本.md`
 - Agent-cortex (memory backbone): `/Users/george/Documents/Georges/01 🎯 Projects/agent-cortex/`
