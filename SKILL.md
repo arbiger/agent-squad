@@ -1,6 +1,6 @@
 ---
 name: agent-squad
-description: "Trigger terms: `agent-squad`, `mode-b` (legacy alias), `opencode-only`, `team-lead coding workflow`. Activate when opencode operates without Hermes/OpenClaw. Architecture: Team-Lead (MiniMax-M3) → Planner (GPT-5.5) → PM-Reviewer (GPT-5.5, pre-impl) → Coder (MiniMax-M2.7) → PM-Reviewer (GPT-5.5, post-impl) → [fpr-reviewer] → Codex-Executor (GPT-5.3-Codex). PM-Reviewer is invoked TWICE per workflow."
+description: "Trigger terms: `agent-squad`, `mode-b` (legacy alias), `opencode-only`, `team-lead coding workflow`. Activate when opencode operates without Hermes/OpenClaw. Architecture: Team-Lead (MiniMax-M3) → Planner (GPT-5.5) → PM-Reviewer (GPT-5.5, pre-impl) → Coder (MiniMax-M3) → PM-Reviewer (GPT-5.5, post-impl) → [fpr-reviewer] → Codex-Executor (GPT-5.3-Codex). PM-Reviewer is invoked TWICE per workflow."
 ---
 
 # Agent Squad: Five-Role Architecture
@@ -9,7 +9,7 @@ description: "Trigger terms: `agent-squad`, `mode-b` (legacy alias), `opencode-o
 
 When the user activates agent-squad (via trigger terms), opencode operates as a standalone team system without Hermes/OpenClaw orchestration.
 
-**Five custom agents + 3 opencode built-ins**: Team-Lead (MiniMax-M3) → Planner (GPT-5.5) → **PM-Reviewer pre-impl** (GPT-5.5, red-team the plan) → Coder (MiniMax-M2.7) → **PM-Reviewer post-impl** (GPT-5.5, blue+red) → [fpr-reviewer] (optional, substantial work) + Codex-Executor (GPT-5.3-Codex, special tasks). PM-Reviewer is invoked twice; fpr-reviewer is the optional second-stage auditor.
+**Five custom agents + 3 opencode built-ins**: Team-Lead (MiniMax-M3) → Planner (GPT-5.5) → **PM-Reviewer pre-impl** (GPT-5.5, red-team the plan) → Coder (MiniMax-M3) → **PM-Reviewer post-impl** (GPT-5.5, blue+red) → [fpr-reviewer] (optional, substantial work) + Codex-Executor (GPT-5.3-Codex, special tasks). PM-Reviewer is invoked twice; fpr-reviewer is the optional second-stage auditor.
 
 ## Core Flow
 
@@ -23,7 +23,7 @@ Human ↔ Team-Lead (MiniMax-M3)
         PM-Reviewer (GPT-5.5) ← PRE-IMPL INVOCATION
            │ red-team the plan (validate intent, scope, flag gaps)
            ↓
-        Coder (MiniMax)
+        Coder (MiniMax-M3)
            │ implements, self-tests
            ↓
         PM-Reviewer (GPT-5.5) ← POST-IMPL INVOCATION (same agent, different focus)
@@ -76,7 +76,7 @@ All roles follow the Andrej Karpathy-inspired baseline:
 
 - **Team-Lead** (MiniMax-M3): Coordinates all. Does NOT code or plan. Human-facing communication.
 - **Planner** (GPT-5.5): Task decomposition, success criteria, plan writing. Use after Team-Lead clarifies needs.
-- **Coder** (MiniMax-M2.7): Standard implementation tasks — edits, bash, glob, grep, read. Use for routine coding, file changes, running tests.
+- **Coder** (MiniMax-M3): Standard implementation tasks — edits, bash, glob, grep, read. Use for routine coding, file changes, running tests.
 - **PM-Reviewer** (GPT-5.5): Review with blue (correctness/quality) + red (adversarial/security) scope. Use after Coder completes. Hard gate on every implementation.
 - **ccl-red-team / fpr-reviewer** (optional, substantial work only): First-Principles Review from a different angle — challenges the *approach*, not just the *output*. Layer on top of PM-Reviewer for architecture decisions, multi-file refactors, security-sensitive work, or business proposals. See *Two-Stage Review* below.
 - **Codex-Executor** (GPT-5.3-Codex): Complex execution, debugging, technical deep-dives. Use when task involves intricate bugs, performance issues, or multi-step execution chains beyond routine implementation.
