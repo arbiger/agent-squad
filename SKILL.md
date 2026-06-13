@@ -15,6 +15,8 @@ When the user activates agent-squad (via trigger terms), opencode operates as a 
 
 ## Loop Engineering Anchoring
 
+> **#george — decision/rationale**: Chose to anchor agent-squad in the loop engineering frame (Addy Osmani, 2026) because the existing 5-role architecture is already element #6 (sub-agents). Anchoring makes the implicit explicit: this skill is a piece of a 6-element loop, not a standalone framework. Loop eng #1 (automation) and #5 (connectors) are explicitly *deferred* here because the shell scaffold + opencode MCP layer already cover them at the platform level — the skill shouldn't duplicate platform concerns. The "+1 verification gate" is the entire reason PM-Reviewer × 2 + 12 rules + 3-challenge limit exist; this section makes that lineage visible to anyone reading the skill.
+
 AI Loop Engineering (Addy Osmani, 2026) defines 6 elements + 1 verification gate. agent-squad is the productionized sub-agent pattern (element #6). This skill also integrates the other 5 elements to varying degrees: #2 worktree via superpowers, #3 memory via AC preflight (Step 0), #4 skills (the skill itself), #5 connectors via MCP. The +1 verification gate is operationalized as PM-Reviewer × 2 + 12 rules + 3-challenge limit + the 7 HIL triggers defined here.
 
 | Loop Eng # | Element | agent-squad integration |
@@ -199,6 +201,8 @@ PM-Reviewer and ccl-red-team are **related but distinct** review angles. Layer t
 
 ## HIL Triggers & Async-Human Behavior
 
+> **#george — decision/rationale**: The original loop engineering article framed the human as "involved at the beginning" (setup), but the actual operating model needs an *ongoing* human — at scope clarification, plan review, accept/reject, and escalation. So I separated *default* (boundaries only, low interruption) from *triggers* (7 structured MUST-escalate conditions). The 7 are deliberately a decision tree, not a flat list: PM-Reviewer checks in order and the first match wins. Original 6 triggers were reorganized into 7 by splitting "high-stakes" into state change + cost/risk per PM-Reviewer A1 fix — that dedup caught real overlap between (1) external action, (6c) state change, and (6d) public-facing output. Async-human behavior is the part the article never covered: what happens when HIL fires but I'm asleep? STOP/CONTINUE/RECORD with the "ambiguous reply" guard added after run #1 review.
+
 ### Human-in-the-Loop Default
 
 **Default = boundaries**: Team-Lead clarifies at start, reports status throughout, accepts at end. PM-Reviewer is the mid-loop gate, not human.
@@ -244,6 +248,8 @@ If HIL escalation fires and human is unavailable, the framework **MUST**:
 
 ## Permission / Authority Model
 
+> **#george — decision/rationale**: This section was added because HIL triggers imply authority but don't define it. Without it, "may not do" claims were unenforceable — agents could rationalize "I thought I could do that". The hard rule at the top is deliberately absolute: no agent crosses another agent's boundary without explicit human approval. Note this *duplicates* the opencode.json `permission` blocks at a different layer — opencode.json is what the runtime enforces, this table is what the agent *understands* it's allowed to do. They should stay in sync; if they drift, opencode.json wins at runtime but the agent will keep making requests that get denied, which wastes rounds. Rule of thumb: anything that crosses George's machine = HIL.
+
 **Hard rule**: No agent may perform an action listed in another agent's "May NOT do" column without explicit human approval.
 
 | Authority | May do without asking | May NOT do |
@@ -259,6 +265,8 @@ If HIL escalation fires and human is unavailable, the framework **MUST**:
 ---
 
 ## Tool Capability Registry
+
+> **#george — decision/rationale**: "Connectors via MCP" was the loop eng #5 integration but it was conceptual until this table existed. Without it, agents didn't know which tools require HIL escalation. The table is intentionally redundant with Permission/Authority above — it answers the *tool-shaped* question ("can I push?") rather than the *role-shaped* question ("what can Coder do?"). Cross-machine actions = HIL was the rule of thumb I applied: anything where the action leaves this machine and can't be trivially undone by re-running. This is also the layer where opencode MCP servers (agent-cortex, google-ai-search) get their boundaries — read vs write, scope of authority.
 
 | Tool / MCP | Capability | Authority required |
 |---|---|---|
@@ -280,6 +288,8 @@ If HIL escalation fires and human is unavailable, the framework **MUST**:
 ---
 
 ## Handoff Contract
+
+> **#george — decision/rationale**: The 13-field handoff was the operational discipline piece the skill was missing. Original PLAN had 12; PM-Reviewer A6 caught the off-by-one (I had been counting "Background" as part of "Goal"). The dynamic-per-task Forbidden actions was the most important PM-Reviewer fix (A5): if the field is auto-populated from HIL triggers for every task, it becomes boilerplate agents ignore. Making it task-specific forces Planner/Team-Lead to actually think about what could go wrong. The trivial/non-trivial split with PM-Reviewer override was the escape valve — we don't want to fill out 13 fields for a typo fix. The "no extra features" reading of the contract is a forcing function for scope discipline.
 
 ### Mandatory Scope
 
@@ -316,6 +326,8 @@ Team-Lead/Planner **MUST** derive task-specific Forbidden actions from the HIL t
 
 ## Step 0 — Memory Preflight
 
+> **#george — decision/rationale**: Step 0 closes loop eng #3 (memory) — the missing piece in the original 5-role architecture. It was decided 2026-06-11 ("wire memory into agent-squad preflight") but never actually written. The order (project ID → AC query → human clarify) was the friction: PM-Reviewer A3 caught the conflict with the old Team-Lead Rule #1 ("clarify before escalate"). Resolved by making Rule #1 explicitly Step-0-first, then clarify, with the escape hatch that ambiguous project → ask one human clarification first, then return to Step 0. The stale-memory handling (A4) is the part I'm most uncertain about long-term — 30-day rule is a guess; may need tuning after we see real staleness patterns in AC. Source priority (user instruction > project files > skill > AC memory) is the real safety net, not the timestamp.
+
 Team-Lead runs this before delegating to Planner. Step 0 is NOT a replacement for human clarification — it is a memory layer that makes the clarification more informed.
 
 ### Step 0 Order
@@ -349,6 +361,8 @@ Team-Lead runs this before delegating to Planner. Step 0 is NOT a replacement fo
 ---
 
 ## Incident Learning Loop
+
+> **#george — decision/rationale**: The incident loop is the piece that turns mistakes into skill patches rather than just memories. Original 8 incident types were expanded to 13 after PM-Reviewer post-impl review (the missing types were secret leak, hallucination treated as fact, out-of-scope file overwrite, permission violation even without damage, and post-completion evidence failure). The closed list is deliberate — open-ended "what counts as an incident" leads to rationalization ("this wasn't really an incident"). The writeback format (incident / root_cause / prevention_rule / evidence / timestamp) is a forcing function for actual learning: if you can't write a prevention rule, you didn't really understand what went wrong. Topic key `{project}-incident` keeps it queryable in AC and out of decision memory. This is the loop eng "+1" gate applied to learning, not just verification.
 
 ### What Counts as an Incident (Closed List)
 
@@ -477,6 +491,8 @@ Do exactly what is assigned — no extra features, no refactoring beyond what's 
 
 ## Completion Checklist + Evidence Requirements
 
+> **#george — decision/rationale**: The per-refinement evidence table is the "+1 verification gate" applied at the artifact level, not just the rule level. PM-Reviewer A8 was the gap: rules existed as aspirations without proof-of-compliance. The table is the forcing function — every handoff and every completion report must include the relevant evidence rows. If evidence is missing, work is NOT done, even if the code works. This is also where we close the "checkbox prose" failure mode: agents will say "AC checked ✓" without showing the actual query terms; the table makes that impossible. The async-human row was added after PM-Reviewer post-impl because it was the easiest place to enforce the ambiguous-reply guard — specific action name required. Incident assessment row was added so every run has to explicitly state "no incidents" or list them, which is the operational hook for the incident learning loop above.
+
 Every rule in the skill must produce observable artifacts. PM-Reviewer MUST verify these before accepting work.
 
 - [ ] Team-Lead clarified demands with human
@@ -512,6 +528,8 @@ Every rule in the skill must produce observable artifacts. PM-Reviewer MUST veri
 ---
 
 ## Superpowers Integration
+
+> **#george — decision/rationale**: This is the "combine with superpowers — read, analysis with GPT-5.5" piece from the original ask. The mapping makes explicit what was implicit: GPT-5.5 already runs Planner + PM-Reviewer, but they weren't invoking superpowers process skills — just doing the work without a methodology. Now each role has named superpowers skills it considers/invokes/skips. TDD carve-out is "mandatory for logic, skip for trivial" — this is the rule I'm most likely to revisit; the "is this logic or trivial" judgment call could be a rationalization vector under pressure. The load order / recursion guard was the unblocker: `using-superpowers` → `agent-squad` → process skill, with no self-reload. Without that, an agent could re-trigger agent-squad from within agent-squad and burn context. The 3-of-12 rules that map to skills (1≈brainstorming, 9≈TDD, 12≈verification) is the right ratio — too much overlap would mean one of the two is redundant, but 3/12 means superpowers is a methodology layer, not a replacement for the 12 rules.
 
 ### Placement
 
