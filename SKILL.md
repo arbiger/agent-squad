@@ -250,7 +250,7 @@ Coder has max 3 attempts to pass PM-Reviewer on the same issue. After the 3rd re
 
 ## 7. Reference
 
-- 12 rules baseline: see Andrej Karpathy link at top (external document)
+- 12 rules baseline: see `Coding-Rules.md` in the project folder (canonical local copy of the Karpathy rules)
 - Superpowers skill set: see superpowers link at top (external document)
 - Project folder: `~/Documents/Georges/01 🎯 Projects/agent-squad/`
 - Earlier versions archived:
