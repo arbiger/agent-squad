@@ -2,6 +2,8 @@
 
 Superpowers is an optional companion methodology for Agent Squad.
 
+https://github.com/obra/superpowers
+
 Agent Squad must still work when Superpowers is not installed. If a mapped Superpowers skill is unavailable, continue with Agent Squad's native contracts:
 
 - Risk-based routing
