@@ -1,0 +1,10 @@
+.env
+.env.*
+*.key
+*.pem
+id_*
+.DS_Store
+node_modules/
+dist/
+build/
+*.log
