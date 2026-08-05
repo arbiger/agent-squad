@@ -49,7 +49,7 @@ independence, cleaner context, parallelism, or reduced rework.
 
 ## Codex Files
 
-Personal custom agents live in `~/.codex/agents/`:
+Personal custom agents live in `<user-home>/.codex/agents/`:
 
 ```text
 planner.toml
@@ -61,7 +61,7 @@ executor.toml
 Each file defines `name`, `description`, `developer_instructions`, `model`, and
 `model_reasoning_effort`. Planner and Reviewer should be read-only.
 
-Keep delegation shallow and bounded in `~/.codex/config.toml`:
+Keep delegation shallow and bounded in `<user-home>/.codex/config.toml`:
 
 ```toml
 [agents]
