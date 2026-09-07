@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agent Squad for Codex"
+  short_description: "Current-chat Lead with one Luna Max worker"
+  default_prompt: "Use $agent-squad with the current chat as Lead and one Luna Max worker for implementation and same-worker verification."
+policy:
+  allow_implicit_invocation: true

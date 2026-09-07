@@ -1,117 +1,55 @@
-# Agent Squad Setup
+# Agent Squad for Codex Setup
 
-Agent Squad should ask for preferences before generating or recommending a team mapping.
+This package targets Codex with the current chat as an OpenAI Lead (Sol Medium/High or Astra Low examples) and one gpt-5.6-luna execution worker at Max reasoning. It does not set the main model or overwrite runtime limits.
 
-## Setup Questions
+## 1. Install
 
-Ask:
+Run the installer from the package directory:
 
-```text
-1. Which runtime are you using?
-   Examples: opencode, Codex, Claude, OpenClaw, Hermes, Antigravity, custom.
+~~~sh
+./install.sh
+~~~
 
-2. Does the runtime support real subagents?
-   yes / no / not sure
+For a disposable target:
 
-3. What is your priority?
-   reliability-first / balanced / cost-sensitive / local-first
+~~~sh
+./install.sh /tmp/agent-squad-codex-home
+~~~
 
-4. Which model providers or model classes are available?
-   Examples: OpenAI, MiniMax, Claude, Gemini, local models, unknown.
+The first argument is the target Codex home. If omitted, the installer uses $CODEX_HOME or $HOME/.codex.
 
-5. Do you want Team-Lead discussion to use a high-reasoning model?
-   yes / no / only for Standard and Heavy
+Before replacing managed files, the installer moves any existing skill or Luna agent into a collision-safe timestamped backup below <target>/backups/. It leaves unrelated files in place and never edits <target>/config.toml.
 
-6. Where should durable dev logs go?
-   none / project dev-log / memory system / ask each project
+## 2. Check runtime support
 
-7. Are companion process skills available?
-   Examples: Superpowers, custom skills, none.
-```
+Use the Codex version and documentation available in the target environment to confirm custom-agent and subagent support. Runtime-specific concurrency limits may differ. Do not copy an old config snippet or blindly overwrite the user's chosen model, reasoning, or concurrency settings.
 
-## Mapping Rules
+The package does not select Sol, Astra, or any other Lead model. The current chat model and reasoning are chosen by the user or runtime. Sol Medium/High and Astra Low are compatible examples, not equivalent-model claims. A UI switch changes later Lead turns; the skill cannot lock or automatically revert that choice.
 
-Do not require a specific provider. Map roles by capability.
+## 3. Run a no-write smoke test
 
-Reliability-first:
+Use a fresh disposable task:
 
-```text
-Team-Lead: high-reasoning discussion model
-Planner: high-reasoning model
-Worker/Coder: coding-specialized model
-Reviewer: high-reasoning model
-FPR-Reviewer: high-reasoning model
-Executor: coding/tool-specialized model
-```
+~~~text
+Use $agent-squad for a no-write delegation smoke test. Keep the current chat as Lead, use exactly one Luna Max worker to return "worker-ok", then send a distinct verification follow-up to that same worker and have it return "verify-ok". Perform the Lead blue/red review and report the observed model and reasoning metadata. Do not create or modify files or external systems.
+~~~
 
-Balanced:
+Confirm from runtime evidence:
 
-```text
-Team-Lead: fast judgment model
-Planner: high-reasoning model for Standard/Heavy
-Worker/Coder: mid/high coding model
-Reviewer: high-reasoning model
-FPR-Reviewer: optional high-reasoning model
-Executor: coding/tool-specialized model
-```
+- one bounded luna_worker was used
+- the worker is Luna Max according to delegation metadata
+- any verification follow-up went to the same worker
+- no planner, reviewer, second worker, or nested delegation was created
+- the Lead reported blue review, red review, technical acceptance, and remaining authorization gates
 
-Cost-sensitive:
+Same-worker verification is not independent testing. If Luna cannot be discovered or launched, report that blocker instead of substituting another model.
 
-```text
-Team-Lead: small/medium judgment model
-Planner: high-reasoning only when needed
-Worker/Coder: affordable coding model
-Reviewer: high-reasoning only for Standard/Heavy
-FPR-Reviewer: rare
-Executor: coding/tool model only when command-heavy
-```
+## 4. Operate safely
 
-Local-first:
+The Lead may handle discussion and review-only work without spawning. For implementation, the Luna handoff must include goal, background, allowed files or artifacts, non-goals, required changes, success criteria, verification, forbidden actions, evidence, and escalation triggers.
 
-```text
-Team-Lead: best available local reasoning model
-Planner: best available local reasoning model, or remote fallback
-Worker/Coder: local coding model if reliable
-Reviewer: strongest available reasoning model
-FPR-Reviewer: optional remote/high reasoning fallback
-Executor: runtime-specific coding executor
-```
+Return fixes to the same Luna worker. Keep the worker within coding, copywriting, testing, or debugging. Do not silently expand into architecture, security, credentials, permissions, migrations, deployment, compliance, regulatory, or business decisions.
 
-## Runtime Behavior
+Technical acceptance is owned by the current Lead and does not approve production or external actions. Use existing user authorization for consequential actions and do not re-ask for an action already authorized.
 
-If real subagents exist:
-
-- create or suggest role prompts
-- map each role to a model
-- verify required roles before dispatch
-
-If real subagents do not exist:
-
-- simulate roles sequentially
-- label each role phase
-- still use the handoff and review contracts
-
-If the user does not know:
-
-- use Balanced
-- simulate roles until runtime support is confirmed
-- ask before generating runtime-specific config
-
-## What To Generate
-
-Depending on runtime, generate one or more:
-
-- role prompt files
-- config snippets
-- manual setup notes
-- model mapping table
-- dev-log policy
-- examples for Light, Standard, and Heavy tasks
-
-## Codex
-
-For Codex custom-agent setup and a balanced Sol/Terra/Luna mapping, see
-`examples/codex-sol-terra-luna.md`.
-
-Keep the human gate human. A Reviewer may recommend approval or escalation,
-but it must not approve consequential actions on the user's behalf.
+For substantial implementation or durable decisions, update the project's existing DEV-LOG.md. Create or update a HANDOFF only for unfinished, blocked, paused, or transferred work; do not duplicate sources of truth or write secrets.
