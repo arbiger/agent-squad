@@ -1,6 +1,6 @@
 ---
 name: agent-squad
-description: Use for reliable multi-step Codex work with a current-chat Human-Facing Lead, one bounded Luna Max implementation and verification worker, evidence-based technical acceptance, and existing human authorization.
+description: "Coordinate bounded project work with one Luna Max worker and Lead-owned acceptance."
 ---
 
 # Agent Squad for Codex
@@ -13,31 +13,40 @@ The current chat is the Human-Facing Lead. The Lead:
 
 - understands the user's intent and context
 - frames the goal, scope, non-goals, success criteria, and verification
-- plans and coordinates the work
-- performs blue review and red review
+- plans and coordinates the work with an observable acceptance checklist
 - owns technical acceptance and reporting
 
-The Lead is not defined by a particular model. Use the actual visible current-chat model and reasoning metadata when available. A UI model switch changes subsequent Lead turns; this skill cannot lock or automatically revert it. If metadata is unavailable, record the identity as user-reported or unverified. Sol Medium/High and Astra Low are examples of possible Lead settings, not a claim that those models are equal.
+The Lead can use any model selected by the user or runtime. Do not lock or automatically change that selection. Record actual model and reasoning metadata when available; otherwise mark it unverified.
+
+Before delegation, write a short checklist of observable outcomes and checks, tailored to the task, and include it in the handoff:
+
+```text
+Acceptance checklist:
+- [ ] Requested behavior or artifact is present: <observable result>
+- [ ] Scope and non-goals hold: <expected boundary>
+- [ ] Verification evidence is available: <specific check or readback>
+```
 
 Before tool-heavy work, declare the route in commentary:
 
 ```text
-Lead (actual visible identity) -> Luna Max: Build -> same Luna Max: Verify -> Lead: Blue/Red Review and Technical Acceptance
+Current-chat Lead (user-selected model) -> one Luna Max worker: Build -> same worker: Verify -> Lead: Integrated Technical Acceptance
 ```
 
 State any omitted phases or deviations honestly. This route does not claim model equality or grant missing authorization.
 
 ## When To Delegate
 
-The Lead handles discussion, planning, copy review, technical review, and review-only tasks directly without spawning.
+The Lead handles trivial tasks, discussion, planning, copy review, technical review, and review-only tasks directly without spawning.
 
-When implementation, artifact production, coding, copywriting, testing, or debugging is needed:
+When implementation, artifact production, coding, copywriting, testing, or debugging merits delegation:
 
 - use exactly one `luna_worker`
 - use Luna Max for the implementation and the later verification follow-up
-- do not add planner or reviewer agents, parallel workers, or nested delegation
+- do not add a planner, second implementation worker, parallel workers, or nested delegation
 - return fixes to the same worker
 - if Luna is unavailable, report the actual blocker, retain any partial work and handoff, and do not silently substitute another model or worker
+- for higher-risk work, add a separate review or human gate only when warranted; the implementation worker remains the same single Luna worker
 
 ## Worker Lifecycle
 
@@ -45,7 +54,7 @@ When implementation, artifact production, coding, copywriting, testing, or debug
 2. Luna reads before writing and executes only the assigned coding, copywriting, testing, or debugging work.
 3. After implementation, the Lead sends a distinct verification follow-up to the same Luna worker with the acceptance checklist.
 4. Any fixes return to that same worker; do not replace it with another agent.
-5. The Lead reads the resulting diff or artifacts, reviews the evidence, performs targeted risk checks, and owns technical acceptance.
+5. The Lead reads the resulting diff or artifacts, checks the acceptance checklist and evidence, and owns one integrated technical acceptance.
 
 The same-worker verification pass is useful but is not independent testing. Do not describe it as independent review or testing.
 
@@ -59,7 +68,7 @@ Background:
 Allowed files or artifacts:
 Non-goals:
 Required changes:
-Success criteria:
+Acceptance checklist:
 Verification commands or checks:
 Forbidden actions:
 Evidence required:
@@ -68,24 +77,15 @@ Escalation triggers:
 
 The worker stays within the allowed artifacts and within coding, copywriting, testing, or debugging. It must not expand scope, delegate, or make architecture, cross-module, security, credential, permission, data-migration, deployment, compliance, regulatory, or business decisions. If the boundary is ambiguous or a forbidden decision is reached, stop and report the blocker while retaining partial work and evidence.
 
-## Review And Acceptance
+## Integrated Technical Acceptance
 
-The Lead reviews the worker's actual output and evidence.
+After the worker returns, the Lead performs one acceptance pass against the checklist and actual output:
 
-Blue review checks:
+- confirm the requested result, scope, conventions, and verification evidence
+- briefly challenge a plausible failure mode or untested boundary; run a targeted check or state what remains unverified
+- disclose residual risks, skipped checks, and any required records or handoff
 
-- the result satisfies the stated goal and success criteria
-- changed files or artifacts remain within scope and project conventions
-- verification commands actually ran and their evidence matches the report
-- required records, handoffs, and skipped checks are disclosed
-
-Red review challenges:
-
-- assumptions, realistic failure paths, and untested boundaries
-- regressions, leftovers, unsafe authority, data loss, security exposure, or irreversible behavior
-- whether the work solved the stated problem rather than only passing a narrow check
-
-The Lead may run targeted risk checks. The Lead does not duplicate the worker's full test suite, build, packaging, benchmark, or GUI pass by default. If evidence conflicts, return a bounded fix to the same worker or report the mismatch.
+This is one integrated acceptance, not mandatory separate blue and red phases. The Lead may run targeted risk checks, but does not duplicate the worker's full test suite, build, packaging, benchmark, or GUI pass by default. If evidence conflicts, return a bounded fix to the same worker or report the mismatch.
 
 Technical acceptance belongs to the Lead. It does not grant production approval, publish permission, or other missing authorization. The user uses the outputs and provides operational feedback; the user is not expected to inspect code to perform the technical acceptance step.
 
@@ -123,6 +123,7 @@ Keep the final report concise and include:
 ```text
 Lead identity: visible model/reasoning metadata, or user-reported/unverified
 Status: done | blocked | partial | needs human decision
+Acceptance: checklist results and concise failure-mode challenge
 Changed: files or artifacts
 Verified: commands, checks, and observed results
 Verification type: same-worker follow-up, not independent testing

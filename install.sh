@@ -30,8 +30,9 @@ if [ ! -s "$skill_source/SKILL.md" ] ||
    [ ! -s "$agent_source" ] ||
    ! grep -q '^name: agent-squad$' "$skill_source/SKILL.md" ||
    ! grep -q '^interface:$' "$skill_source/agents/openai.yaml" ||
+   ! grep -q '^  allow_implicit_invocation: false$' "$skill_source/agents/openai.yaml" ||
    ! grep -q '^name = "luna_worker"$' "$agent_source" ||
-   ! grep -q '^model = "gpt-5.6-luna"$' "$agent_source" ||
+   ! grep -q '^model = "gpt-6-luna"$' "$agent_source" ||
    ! grep -q '^model_reasoning_effort = "max"$' "$agent_source"; then
   printf '%s\n' "package validation failed; no existing files were moved" >&2
   exit 1

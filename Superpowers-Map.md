@@ -1,15 +1,15 @@
 # Superpowers Map
 
-Superpowers is an optional companion methodology. Agent Squad for Codex works without it and the one-worker route does not change when it is installed.
+Superpowers is optional. Agent Squad's native planning, one-worker handoff, integrated acceptance, verification, and human gates are sufficient without it.
 
-Use a relevant installed skill when it reduces risk or improves clarity:
+Use an installed skill only when it reduces risk or improves clarity:
 
-- brainstorming for genuinely ambiguous intake
-- writing-plans when the Lead needs a staged written plan
-- systematic-debugging for unclear or repeated failures
-- test-driven-development for logic or reproducible bug work when practical
-- requesting-code-review or receiving-code-review for structured review handoffs
-- verification-before-completion before delivery when verification risk is high
-- using-git-worktrees for supported isolated experiments
+- `brainstorming` for genuinely ambiguous intake
+- `writing-plans` when a staged plan is useful
+- `systematic-debugging` for unclear or repeated failures
+- `test-driven-development` for logic or reproducible bug work when practical
+- `requesting-code-review` or `receiving-code-review` for an independent review when risk warrants one
+- `verification-before-completion` when verification risk is high
+- `using-git-worktrees` for supported isolated experiments
 
-Do not add planner, reviewer, parallel worker, or nested delegation because a companion skill is present. The current chat remains the Lead; exactly one Luna Max worker handles implementation and the distinct same-worker verification follow-up. Technical acceptance remains with the Lead and is not production approval.
+Superpowers must not become a prerequisite, add implementation workers, or create mandatory separate review phases. The current chat remains Lead; exactly one Luna Max worker handles delegated implementation and same-worker verification. Lead owns one integrated technical acceptance. Add separate review or a human gate only when risk warrants it.

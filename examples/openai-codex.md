@@ -1,18 +1,18 @@
 # OpenAI Codex Route
 
-This is the package's single OpenAI example, not a claim that models are equal or that the Lead must use one fixed model.
+The Lead may use any model selected by the user or runtime. The Luna worker is fixed by this package.
 
 ~~~text
-Current chat Lead: Sol Medium/High or Astra Low example
-Build: one GPT-5.6 Luna Max custom worker
-Verify: the same Luna worker in a distinct follow-up
-Review: current Lead blue review and red review
-Acceptance: current Lead technical acceptance
+Lead: current chat on the user-selected model
+Plan: Lead writes a short, observable acceptance checklist
+Build and verify: one GPT-6 Luna Max custom worker
+Acceptance: one integrated Lead technical acceptance against the checklist
+Challenge: Lead briefly considers a plausible failure mode
 Feedback: user operational feedback and new authorization only when a consequential gate is reached
 ~~~
 
-The current chat handles discussion and review-only work without spawning. It delegates one bounded coding, copywriting, testing, or debugging assignment when implementation is needed. No Planner, Reviewer, second worker, nested delegation, fallback model, automatic model switch, or Sol lock is part of this package.
+The current chat handles trivial, discussion, and review-only work without spawning. It delegates one bounded coding, copywriting, testing, or debugging assignment when implementation is needed. There is no planner, second implementation worker, nested delegation, fallback model, automatic model switch, or fixed Lead model. A separate review or human gate may be added for higher-risk work when warranted.
 
 Record actual visible model and reasoning metadata, or mark it user-reported/unverified. A UI model switch changes subsequent Lead turns and this skill cannot lock or automatically revert it.
 
-The Luna handoff must state goal, background, allowed files or artifacts, non-goals, required changes, success criteria, verification, forbidden actions, evidence, and escalation triggers. If Luna is unavailable, report the actual blocker and retain partial work and handoff; do not substitute another model.
+The Luna handoff must state goal, background, allowed files or artifacts, non-goals, required changes, acceptance checklist, verification, forbidden actions, evidence, and escalation triggers. Same-worker verification is not independent testing. If Luna is unavailable, report the actual blocker and retain partial work and handoff; do not substitute another model.
