@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agent Squad Terra"
+  short_description: "One Terra Low worker with Lead acceptance"
+  default_prompt: "Use $agent-squad-terra for one bounded implementation and verification assignment."
+policy:
+  allow_implicit_invocation: false

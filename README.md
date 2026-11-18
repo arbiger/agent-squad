@@ -73,6 +73,21 @@ The package contains no credentials, personal paths, histories, or provider fall
 
 [Download the curated OpenAI package](https://raw.githubusercontent.com/arbiger/agent-squad/main/downloads/agent-squad-codex-openai-2026-09-26.zip)
 
+## Agent Squad Terra
+
+[`$agent-squad-terra`](agent-squad-terra/SKILL.md) is an opt-in workflow for trying one GPT-6.1 Terra worker at low reasoning (Terra Light). It uses the current chat as Lead. See the [Terra versus Luna comparison guide](agent-squad-terra/references/compare.md).
+
+From this repository, on macOS or Linux:
+
+~~~sh
+codex_dir="${CODEX_HOME:-$HOME/.codex}"
+mkdir -p "$codex_dir/skills/agent-squad-terra" "$codex_dir/agents"
+cp -Rn agent-squad-terra/. "$codex_dir/skills/agent-squad-terra/"
+cp -n agent-squad-terra/agents/terra-worker.toml "$codex_dir/agents/terra-worker.toml"
+~~~
+
+These commands preserve existing files. For an upgrade, review and replace the two Terra paths above with the new versions. Invoke `$agent-squad-terra` explicitly. If the custom role is unavailable, the workflow can use a generic worker when the current runtime exposes the Terra model and effort override. Report launch or capacity blockers in the handoff.
+
 ## Optional Superpowers
 
 Superpowers can be used when installed and relevant, but it is optional. It does not add agents or change the one-worker route.
