@@ -31,14 +31,14 @@ The package does not select, lock, or change the Lead model. The current chat mo
 Use a fresh disposable task:
 
 ~~~text
-Use $agent-squad for a no-write delegation smoke test. Keep the current chat as Lead, define an observable acceptance checklist, and use exactly one Luna Max worker to return "worker-ok". Send a verification follow-up to that same worker and have it return "verify-ok" against the checklist. Perform one integrated Lead technical acceptance, briefly challenge one plausible failure mode, and report the observed model and reasoning metadata. Do not create or modify files or external systems.
+Use $agent-squad for a no-write delegation smoke test. Ask one Luna Max worker to propose an in-memory function that doubles positive integers and rejects zero. In the same response, return the proposed diff and check results for both cases. Lead checks the diff and the zero case. Request follow-up only if evidence is missing or risk is high. Report observed model and effort. Do not write files or modify external systems.
 ~~~
 
 Confirm from runtime evidence:
 
 - one bounded luna_worker was used
 - the worker is Luna Max according to delegation metadata
-- any verification follow-up went to the same worker
+- test evidence arrived with the first result; any follow-up addressed missing evidence or high risk
 - no planner or second implementation worker was created
 - the Lead reported checklist results, one integrated acceptance, a plausible failure mode, and remaining authorization gates
 

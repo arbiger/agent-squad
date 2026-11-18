@@ -5,7 +5,7 @@ The current chat is the Human-Facing Lead on any user-selected model. It frames 
 ## Route
 
 - The Lead handles trivial tasks, discussion, planning, and review-only work directly.
-- Delegated implementation uses exactly one `luna_worker` for build, same-worker verification, and bounded fixes.
+- Delegated implementation uses exactly one `luna_worker` for implementation and testing in one pass, plus bounded fixes.
 - The Lead performs one integrated technical acceptance against the checklist and evidence.
 - Higher-risk work may add an independent review or human gate when warranted; it does not add implementation workers.
 
@@ -13,7 +13,7 @@ Do not lock or change the Lead's model selection. Record actual model and reason
 
 ## Planning And Handoff
 
-Before delegation, write a short, task-specific checklist of observable outcomes and checks. Include it in the handoff and send it back to the same worker for verification:
+Before delegation, write a short, task-specific checklist of observable outcomes and checks. Include it in the handoff. Ask the same worker to verify again only if evidence is missing or risk is high:
 
 ```text
 Acceptance checklist:
@@ -72,7 +72,7 @@ Status: done | blocked | partial | needs human decision
 Acceptance: checklist results and concise failure-mode challenge
 Changed: files or artifacts
 Verified: checks run and observed results
-Verification type: same-worker follow-up, not independent testing
+Verification type: worker tests, Lead checks, and any follow-up
 Risks or skipped checks:
 Next step or human follow-up:
 ```

@@ -5,5 +5,5 @@ model_reasoning_effort = "low"
 developer_instructions = """
 Read before writing. Implement only the assigned goal within the allowed files and non-goals. Do not delegate, expand scope, or take consequential actions. Escalate out-of-scope decisions to the Lead.
 
-On verification follow-up, check the agreed criteria and report changed files, commands, results, blockers, and skipped checks.
+Run the agreed checks before returning the implementation. Report changed files, commands, results, blockers, and skipped checks.
 """

@@ -10,8 +10,8 @@ Use when explicitly invoked for bounded implementation. The current chat stays L
 Terra Light means GPT-6.1 Terra at `low` reasoning in this workflow.
 
 1. Define observable acceptance checks. Give one worker a bounded handoff with the goal, allowed files, non-goals, checks, expected evidence, and escalation triggers. Use the registered `terra_worker` if available. Otherwise, if the current runtime exposes the model and effort, spawn a generic `worker` with explicit `model: "gpt-6.1-terra"` and `reasoning_effort: "low"`, using a bounded handoff without a full-history fork. Include the worker instructions from `agents/terra-worker.toml`. Report the observed model, effort, and whether the worker actually ran.
-2. Have the same worker implement and then verify in a distinct follow-up. Return fixes to that worker. No additional or nested delegation. If Terra Light cannot launch, report the blocker and keep the handoff without substituting another model.
-3. Inspect the diff and evidence against the checklist and check a plausible failure mode. Same-worker verification is not independent testing. Report skipped checks and residual risks.
+2. Have the worker implement and test in one pass, reporting commands, results, and skipped checks. Return fixes to that worker. No additional or nested delegation. If Terra Light cannot launch, report the blocker and keep the handoff without substituting another model.
+3. Inspect the diff and evidence against the checklist and check a plausible failure mode. Ask the same worker to verify again only if evidence is missing or risk is high. Report skipped checks and residual risks.
 
 Use existing authorization for consequential actions. Update the project DEV-LOG for substantial work; use HANDOFF for unfinished or transferred work.
 

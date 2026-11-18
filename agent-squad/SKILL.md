@@ -30,7 +30,7 @@ Acceptance checklist:
 Before tool-heavy work, declare the route in commentary:
 
 ```text
-Current-chat Lead (user-selected model) -> one Luna Max worker: Build -> same worker: Verify -> Lead: Integrated Technical Acceptance
+Current-chat Lead (user-selected model) -> one Luna Max worker: Implement and test -> Lead: Integrated Technical Acceptance
 ```
 
 State any omitted phases or deviations honestly. This route does not claim model equality or grant missing authorization.
@@ -42,7 +42,7 @@ The Lead handles trivial tasks, discussion, planning, copy review, technical rev
 When implementation, artifact production, coding, copywriting, testing, or debugging merits delegation:
 
 - use exactly one `luna_worker`
-- use Luna Max for the implementation and the later verification follow-up
+- use Luna Max for implementation and testing in one pass
 - do not add a planner, second implementation worker, parallel workers, or nested delegation
 - return fixes to the same worker
 - if Luna is unavailable, report the actual blocker, retain any partial work and handoff, and do not silently substitute another model or worker
@@ -52,9 +52,9 @@ When implementation, artifact production, coding, copywriting, testing, or debug
 
 1. The Lead sends one complete, bounded handoff to `luna_worker`.
 2. Luna reads before writing and executes only the assigned coding, copywriting, testing, or debugging work.
-3. After implementation, the Lead sends a distinct verification follow-up to the same Luna worker with the acceptance checklist.
+3. Luna runs the agreed tests in the same pass and reports commands, results, and skipped checks.
 4. Any fixes return to that same worker; do not replace it with another agent.
-5. The Lead reads the resulting diff or artifacts, checks the acceptance checklist and evidence, and owns one integrated technical acceptance.
+5. The Lead checks the diff or artifact against the checklist and evidence, and checks one plausible failure case. Ask the same worker to verify again only if evidence is missing or risk is high.
 
 The same-worker verification pass is useful but is not independent testing. Do not describe it as independent review or testing.
 
@@ -126,7 +126,7 @@ Status: done | blocked | partial | needs human decision
 Acceptance: checklist results and concise failure-mode challenge
 Changed: files or artifacts
 Verified: commands, checks, and observed results
-Verification type: same-worker follow-up, not independent testing
+Verification type: worker tests, Lead checks, and any follow-up
 Risks or skipped checks:
 Next step or human follow-up:
 ```
