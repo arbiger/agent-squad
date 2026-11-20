@@ -72,7 +72,7 @@ The package contains no credentials, personal paths, histories, or provider fall
 
 ## Download
 
-[Download the curated OpenAI package](https://raw.githubusercontent.com/arbiger/agent-squad/main/downloads/agent-squad-codex-openai-2026-11-18.zip)
+[Download the curated OpenAI package](https://raw.githubusercontent.com/arbiger/agent-squad/main/downloads/agent-squad-codex-openai-2026-11-20.zip)
 
 ## Agent Squad Terra
 
@@ -91,7 +91,7 @@ These commands preserve existing files. For an upgrade, review and replace the t
 
 ## Agent Squad Context
 
-[`$agent-squad-context`](agent-squad-context/SKILL.md) uses Sol High to reconcile project sources when needed, including SB7 for customer-facing messaging, then delegates implementation and testing to Luna Max. With the Luna custom agent installed, copy the `agent-squad-context/` folder into `${CODEX_HOME:-$HOME/.codex}/skills/` and invoke it explicitly.
+[`$agent-squad-context`](agent-squad-context/SKILL.md) uses GPT-6.2 Sol High (`gpt-6.2-sol`, `high`) to reconcile project sources when needed, including SB7 for customer-facing messaging. GPT-6.1 Terra Low (`gpt-6.1-terra`, `low`) implements and tests in one pass. Install the Terra custom agent as described above or use a runtime that exposes the Terra model and effort override. Copy the `agent-squad-context/` folder into `${CODEX_HOME:-$HOME/.codex}/skills/` and invoke it explicitly.
 
 ## Optional Superpowers
 
